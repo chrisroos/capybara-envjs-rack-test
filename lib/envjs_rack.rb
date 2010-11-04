@@ -1,0 +1,1 @@
+require 'envjs_rack/app'
