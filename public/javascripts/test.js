@@ -14,13 +14,15 @@ var ajaxifyLinks = function() {
 
 var linkHandler = function() {
   debug('linkHandler');
-  setTimeout(makeAjaxRequest, 1000);
+  var anchor = this;
+  setTimeout(function() { makeAjaxRequest(anchor) }, 1000)
   // return false;
 };
 
-var makeAjaxRequest = function() {
+var makeAjaxRequest = function(anchor) {
   debug('makeAjaxRequest');
-  $.get('/javascripts/test-response.js', renderAjaxResponse);
+  var targetURL = $(anchor).attr('href').replace('#', '');
+  $.get(targetURL, renderAjaxResponse);
 };
 
 var renderAjaxResponse = function(data, textStatus, xhr) {
