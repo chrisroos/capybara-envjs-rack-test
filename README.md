@@ -2,6 +2,14 @@
 
 We came across a strange problem with [capybara-envjs](https://github.com/smparkes/capybara-envjs).  We were getting a `timer error` raised from within the [setTimeout definition](https://github.com/smparkes/env-js/blob/envjsrb/lib/envjs/event_loop.js#L67) in [envjs](https://github.com/smparkes/env-js) itself.
 
+## The fix
+
+I raised this as an [issue against envjs](https://github.com/smparkes/env-js/issues/issue/23) and Steven's now [fixed it](https://github.com/smparkes/env-js/commit/4307aa7b70af992f5e1d60fc736d0ba8c34649c6).  You'll currently need to apply the fix yourself by editing your local version of envjs.  Open the code with `bundle open envjs` and then edit the if condition starting on line 1447 of lib/envjs/env.js.  You'll need to add the following `else` statement (as per the commit above).
+
+    else {
+      prot = prot + '//';
+    }
+
 ## Testing using capybara-envjs
 
 I've created this simple(ish) app to demonstrate the problem with the help of capybara-envjs.  You should be able to see it for yourself by cloning this app and running `rake`.  Alternatively you can run the test from the command line with `ruby -I test -I lib test/envjs_rack_app_test.rb`.
@@ -64,7 +72,3 @@ We do this by:
 * Adding an onclick event handler to each of these anchors that uses setTimeout to specify a function that should be called at some point in the future.  This might seem odd but we were using [jquery animate](http://api.jquery.com/animate/) (which uses setTimeout internally) to fade the content in/out of the page.
 * Using jquery's $.get to request the URL specified in the href and write that into a specific container in the page once it's got the result.  (**NOTE** This demo doesn't currently parse the href - the URL is hardcoded in makeAjaxRequest()).
 * We're explicitly *NOT* returning false from the onclick handler because we want the browser to 'follow' the URL so that we don't break standard browser behaviour.
-
-## The bit at the end
-
-Although this works fine in Chrome, it fails with the `timer error` in envjs.  I'm not currently sure whether this is a problem in envjs (my gut says it is) but at least this should help identify whether it is or not.
