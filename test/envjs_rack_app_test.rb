@@ -13,9 +13,9 @@ class EnvjsRackAppTest < Test::Unit::TestCase
     within '#testResponseContainer' do
       assert page.has_content?('Hello World')
     end
-    
-    assert_equal [root_path, '/javascripts/test-response.js'].join('#'), current_path
-    # save_and_open_page
+
+    expected_window_location = 'http://www.example.com' + root_path + '#' + '/javascripts/test-response.js'
+    assert_equal expected_window_location, current_url
   end
   
 end
